@@ -69,7 +69,7 @@ class App extends Component {
     const isNotId = item => item.objectID !== id;
     const updatedHits = this.state.result.hits.filter(isNotId);
     this.setState({
-      result: Object.assign({}, this.state.result, {hits: updatedHits})
+      result: {...this.state.result, hits:updatedHits}
     });
   }
 
@@ -83,14 +83,15 @@ class App extends Component {
   fetchSearchTopstories(searchTerm){
     fetch(`${PATH_BASE}${PATH_SEARCH}?${PARAM_SEARCH}${searchTerm}`)
     .then(response => response.json())
-    .then(result => this.setSearchTopstories(result))
+    .then(result => this.setSearchTopstories(result));
   }
 
   componentDidMount(){
     const {searchTerm} = this.state;
     this.fetchSearchTopstories(searchTerm);
+    
   }
-
+ 
   render() {
     const {searchTerm, result} = this.state;
 
@@ -114,6 +115,7 @@ class App extends Component {
               pattern = {searchTerm}
               onDismiss = {this.onDismiss}
             />
+            
             :null
           }
          </div>

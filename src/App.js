@@ -117,7 +117,7 @@ const Table = ({list, pattern, onDismiss}) =>
         <span style = {smallColumn}>{item.num_comments}</span>
 
         <span style = {smallColumn}>{item.points}</span>
-
+        
         <span>
           <Button onClick={() => onDismiss(item.objectID)} className = "button-inline">
             Dismiss
@@ -132,7 +132,7 @@ const Button = ({onClick, className = '', children}) =>
     onClick = {onClick}
     className = {className}
     type = "button"
-    >
+  >
     {children}
   </button>
 

@@ -1,38 +1,14 @@
 import React, { Component } from 'react';
 import './App.css';
 
-{/*const list = [
-  {
-    title: 'React',
-    url: 'http://facebook.github.io/react',
-    author: 'Jordan Walke',
-    num_comment: 3,
-    points: 4,
-    objectID: 0
-  },
-
-  {
-    title: 'Redux',
-    url: 'http://facebook.github.io/redux',
-    author: 'Dan Abramov',
-    num_comment: 5,
-    points: 5,
-    objectID: 1
-  },
-
-  {
-    title: 'Flux',
-    url: 'http://facebook.github.io/react',
-    author: 'Jordan Walke',
-    num_comment: 5,
-    points: 3,
-    objectID: 2
-  }
-];*/}
+const DEFAULT_HPP = '100';
+const DEFAULT_PAGE = 0;
 const DEFAULT_QUERY = 'redux';
 const PATH_BASE = 'https://hn.algolia.com/api/v1';
 const PATH_SEARCH = '/search';
 const PARAM_SEARCH = 'query=';
+const PARAM_PAGE = 'page=';
+const PARAM_HPP = 'hitsPerPage=';
 
 //Styles
 const largeColumn = {
@@ -59,10 +35,13 @@ class App extends Component {
       searchTerm: DEFAULT_QUERY
     };
     
-    this.onSearchChange = this.onSearchChange.bind(this);
-    this.onDismiss = this.onDismiss.bind(this);
+    
     this.setSearchTopstories = this.setSearchTopstories.bind(this);
     this.fetchSearchTopstories = this.fetchSearchTopstories.bind(this);
+    this.onSearchChange = this.onSearchChange.bind(this);
+    this.onSearchSubmit = this.onSearchSubmit.bind(this);
+    this.onDismiss = this.onDismiss.bind(this);
+
   }
 
   onDismiss(id){
@@ -77,24 +56,39 @@ class App extends Component {
     this.setState({searchTerm: event.target.value});
   }
   setSearchTopstories(result){
-    this.setState({result});
+    const { hits, page } = result;
+    const oldHits = page !== 0? this.state.result.hits: [];
+    const updatedHits = [
+      ...oldHits,
+      ...hits
+    ];
+    this.setState({
+      result: { hits: updatedHits, page }
+    });
   }
 
-  fetchSearchTopstories(searchTerm){
-    fetch(`${PATH_BASE}${PATH_SEARCH}?${PARAM_SEARCH}${searchTerm}`)
+  fetchSearchTopstories(searchTerm, page){
+    fetch(`${PATH_BASE}${PATH_SEARCH}?${PARAM_SEARCH}${searchTerm}\${page}&${PARAM_HPP}${DEFAULT_HPP}`)
     .then(response => response.json())
     .then(result => this.setSearchTopstories(result));
   }
 
-  componentDidMount(){
+  onSearchSubmit(event){
     const {searchTerm} = this.state;
     this.fetchSearchTopstories(searchTerm);
-    
+    event.preventDefault();
+  }
+
+  componentDidMount(){
+    const {searchTerm} = this.state;
+    this.fetchSearchTopstories(searchTerm, DEFAULT_PAGE);
+  
   }
  
   render() {
     const {searchTerm, result} = this.state;
-
+    const page = (result && result.page) || 0;
+    
     if(!result) {return null;}
 
     return (
@@ -104,6 +98,7 @@ class App extends Component {
             <Search
               value = {searchTerm}
               onChange= {this.onSearchChange}
+              onSubmit = {this.onSearchSubmit}
             > 
               Search 
             </Search>      
@@ -112,33 +107,48 @@ class App extends Component {
             result ? 
             <Table
               list = {result.hits}
-              pattern = {searchTerm}
               onDismiss = {this.onDismiss}
             />
             
             :null
           }
          </div>
-         
+
+         <div className = "interactions">
+          <Button onClick = {() => 
+            this.fetchSearchTopstories(searchTerm, page + 1 )} >
+            More
+          </Button>
+         </div>
       </div>
     );
   }
 }
 
 
-const Search = ({value, onChange, children}) =>
-    <form>
-    {children}
-    <input 
-      type="text" 
-      value = {value} 
-      onChange = {onChange}/>
+const Search = ({
+  value, 
+  onChange, 
+  onSubmit, 
+  children
+}) =>
+    <form onSubmit = {onSubmit}>
+  
+      <input 
+        type="text" 
+        value = {value} 
+        onChange = {onChange}
+      />
+
+      <button type= "submit">
+        {children}
+      </button>
     </form>
 
   
-const Table = ({list, pattern, onDismiss}) => 
+const Table = ({list, onDismiss}) => 
   <div className = "table">
-    {list.filter(isSearched(pattern)).map( item => 
+    {list.map( item => 
       <div key = {item.objectID} className = "table-row">
 
         <span style = {largeColumn}>

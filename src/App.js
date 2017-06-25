@@ -156,7 +156,7 @@ const Table = ({list, onDismiss}) =>
       <div key = {item.objectID} className = "table-row">
 
         <span style = {largeColumn}>
-          <a href={item.url}>{item.title} target = "blank" ></a>
+          <a target = 'blank' href={item.url}>{item.title} ></a>
         </span>
 
         <span style = {midColumn}>{item.author}</span>

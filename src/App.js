@@ -4,7 +4,7 @@ import './App.css';
 
 const DEFAULT_HPP = '25';
 const DEFAULT_PAGE = 0;
-const DEFAULT_QUERY = 'react';
+const DEFAULT_QUERY = 'apple';
 const PATH_BASE = 'https://hn.algolia.com/api/v1';
 const PATH_SEARCH = '/search';
 const PARAM_SEARCH = 'query=';
@@ -156,7 +156,7 @@ const Table = ({list, onDismiss}) =>
       <div key = {item.objectID} className = "table-row">
 
         <span style = {largeColumn}>
-          <a href={item.url}>{item.title}</a>
+          <a href={item.url}>{item.title} target = "blank" ></a>
         </span>
 
         <span style = {midColumn}>{item.author}</span>

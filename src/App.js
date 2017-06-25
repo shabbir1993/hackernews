@@ -4,7 +4,7 @@ import './App.css';
 
 const DEFAULT_HPP = '100';
 const DEFAULT_PAGE = 0;
-const DEFAULT_QUERY = 'redux';
+const DEFAULT_QUERY = 'react';
 const PATH_BASE = 'https://hn.algolia.com/api/v1';
 const PATH_SEARCH = '/search';
 const PARAM_SEARCH = 'query=';
@@ -56,6 +56,7 @@ class App extends Component {
   onSearchChange(event){
     this.setState({searchTerm: event.target.value});
   }
+
   setSearchTopstories(result){
     const { hits, page } = result;
     const oldHits = page !== 0? this.state.result.hits: [];
@@ -83,7 +84,6 @@ class App extends Component {
   componentDidMount(){
     const {searchTerm} = this.state;
     this.fetchSearchTopstories(searchTerm, DEFAULT_PAGE);
-  
   }
  
   render() {

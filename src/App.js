@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import './App.css';
 
-const DEFAULT_HPP = '100';
+const DEFAULT_HPP = '25';
 const DEFAULT_PAGE = 0;
 const DEFAULT_QUERY = 'react';
 const PATH_BASE = 'https://hn.algolia.com/api/v1';
